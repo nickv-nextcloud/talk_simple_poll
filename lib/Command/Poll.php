@@ -127,6 +127,11 @@ class Poll extends Base {
 			return;
 		}
 
+		if ($input->getArgument('userId') === '') {
+			$output->writeln('Guests can\'t vote for now');
+			return;
+		}
+
 		$options = json_decode($poll->getOptions(), true);
 		$optionId = $payload - 1;
 		if ($optionId < 0 || $optionId >= count($options)) {
