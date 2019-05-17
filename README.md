@@ -1,6 +1,8 @@
 # Simple chat polls for Nextcloud Talk
 
-## Start a poll
+## Usage
+
+### Start a poll
 
 ```
 /poll Do you like polls
@@ -19,7 +21,7 @@ Poll: Do you like polls?
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0% (Votes: 0)
 ```
 
-## Vote on a poll or change your mind
+### Vote on a poll or change your mind
 
 ```
 /vote 1
@@ -47,7 +49,7 @@ Poll: Do you like polls?
 /vote 2 - No
 ```
 
-## Close the poll
+### Close the poll
 
 ```
 /poll close
@@ -64,7 +66,7 @@ Poll: Do you like polls?
 ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 4% (Votes: 4)
 ```
 
-## See the last poll again
+### See the last poll again
 
 ```
 /poll show
@@ -80,3 +82,12 @@ Poll: Do you like polls?
 2. No
 ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 4% (Votes: 4)
 ```
+
+## Installation
+
+1. Install the app
+2. Setup the commands (you need to use your full path to occ):
+    ```
+    sudo -u www-data occ talk:command:add poll Poll '/var/www/nextcloud/occ talk:poll {ROOM} {USER} poll "{ARGUMENTS_DOUBLEQUOTE_ESCAPED}"' 2 3
+    sudo -u www-data occ talk:command:add vote Poll '/var/www/nextcloud/occ talk:poll {ROOM} {USER} vote "{ARGUMENTS_DOUBLEQUOTE_ESCAPED}"' 2 3
+    ```
