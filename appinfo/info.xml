@@ -30,5 +30,6 @@
 
 	<commands>
 		<command>OCA\TalkSimplePoll\Command\Poll</command>
+		<command>OCA\TalkSimplePoll\Command\Vote</command>
 	</commands>
 </info>

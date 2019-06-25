@@ -27,12 +27,12 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Poll extends Base {
+class Vote extends Base {
 
 	protected function configure(): void {
 		$this
-			->setName('talk:poll')
-			->setDescription('Simple polls for Nextcloud Talk')
+			->setName('talk:poll:vote')
+			->setDescription('Vote on a simple poll')
 			->addArgument(
 				'token',
 				InputArgument::REQUIRED
@@ -45,18 +45,10 @@ class Poll extends Base {
 				'payload',
 				InputArgument::REQUIRED
 			)
-			->setHelp('/poll - Simple polls for Nextcloud Talk
+			->setHelp('/vote - Vote for an option of "Simple polls for Nextcloud Talk"
 
-Start a poll by sending a message with /poll and your question in the first line
-and each possible answer in a follow up line, e.g.:
-    /poll When should we leave?
-    1pm
-    2pm
-    3pm
-    4pm
-
-To close a running poll send a message with:
-    /poll close')
+To vote for option 2, send a message with:
+    /vote 2')
 		;
 	}
 
@@ -69,48 +61,40 @@ To close a running poll send a message with:
 			$poll = null;
 		}
 
-		if (($payload === 'close' || $payload === 'end') && $poll instanceof \OCA\TalkSimplePoll\Model\Poll) {
-			$poll->setStatus(\OCA\TalkSimplePoll\Model\Poll::STATUS_CLOSED);
-			$this->pollMapper->update($poll);
-
-			$this->showPoll($output, $poll);
+		if (!$poll instanceof \OCA\TalkSimplePoll\Model\Poll) {
+			$output->writeln('There is currently no poll running.');
 			return;
 		}
 
-		if ($payload === 'show' && $poll instanceof \OCA\TalkSimplePoll\Model\Poll) {
-			$this->showPoll($output, $poll);
+		if ($poll->getStatus() === \OCA\TalkSimplePoll\Model\Poll::STATUS_CLOSED) {
+			$output->writeln('There is currently no poll running.');
 			return;
 		}
 
-		if (!$poll instanceof \OCA\TalkSimplePoll\Model\Poll || $poll->getStatus() === \OCA\TalkSimplePoll\Model\Poll::STATUS_CLOSED) {
-
-			$options = explode("\n", $payload);
-			$numOptions = count($options);
-
-			if (strlen($payload) > (750 - ($numOptions * 50))) {
-				$output->writeln('The question and answer are too long.');
-				return;
-			}
-
-			if (count($options) < 3) {
-				$output->writeln('You need to provide one question and at least two answers');
-				return;
-			}
-
-			$question = array_shift($options);
-			$poll = new \OCA\TalkSimplePoll\Model\Poll();
-			$poll->setToken($input->getArgument('token'));
-			$poll->setUserId($input->getArgument('userId'));
-			$poll->setQuestion($question);
-			$poll->setOptions(json_encode($options));
-			$this->pollMapper->insert($poll);
-
-			$this->showPoll($output, $poll);
+		if ($input->getArgument('userId') === '') {
+			$output->writeln('Guests can\'t vote.');
 			return;
 		}
 
-		$output->writeln('A poll is already running.');
-		$output->writeln('');
+		$options = json_decode($poll->getOptions(), true);
+		$optionId = $payload - 1;
+		if ($optionId < 0 || $optionId >= count($options)) {
+			$output->writeln('Invalid option');
+			return;
+		}
+
+		try {
+			$vote = $this->voteMapper->findByPollForUser($poll, $input->getArgument('userId'));
+			$vote->setOptionId($optionId);
+			$this->voteMapper->update($vote);
+		}catch (DoesNotExistException $e) {
+			$vote = new \OCA\TalkSimplePoll\Model\Vote();
+			$vote->setUserId($input->getArgument('userId'));
+			$vote->setPollId($poll->getId());
+			$vote->setOptionId($optionId);
+			$this->voteMapper->insert($vote);
+		}
+
 		$this->showPoll($output, $poll);
 	}
 }
