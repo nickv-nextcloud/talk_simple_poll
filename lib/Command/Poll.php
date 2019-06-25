@@ -81,7 +81,7 @@ class Poll extends Base {
 		}
 
 		if ($action === 'poll') {
-			if ($payload === 'close' && $poll instanceof \OCA\TalkSimplePoll\Model\Poll) {
+			if (($payload === 'close' || $payload === 'end') && $poll instanceof \OCA\TalkSimplePoll\Model\Poll) {
 				$poll->setStatus(\OCA\TalkSimplePoll\Model\Poll::STATUS_CLOSED);
 				$this->pollMapper->update($poll);
 
@@ -95,9 +95,17 @@ class Poll extends Base {
 			}
 
 			if (!$poll instanceof \OCA\TalkSimplePoll\Model\Poll || $poll->getStatus() === \OCA\TalkSimplePoll\Model\Poll::STATUS_CLOSED) {
+
 				$options = explode("\n", $payload);
-				if (count($options) !== 3) {
-					$output->writeln('You need to provide one question and two answers');
+				$numOptions = count($options);
+
+				if (strlen($payload) > (750 - ($numOptions * 50))) {
+					$output->writeln('The question and answer are too long.');
+					return;
+				}
+
+				if (count($options) < 3) {
+					$output->writeln('You need to provide one question and at least two answers');
 					return;
 				}
 
@@ -113,22 +121,24 @@ class Poll extends Base {
 				return;
 			}
 
-			$output->writeln('A poll is already running');
+			$output->writeln('A poll is already running.');
+			$output->writeln('');
+			$this->showPoll($output, $poll);
 			return;
 		}
 
 		if (!$poll instanceof \OCA\TalkSimplePoll\Model\Poll) {
-			$output->writeln('There is currently no poll running');
+			$output->writeln('There is currently no poll running.');
 			return;
 		}
 
 		if ($poll->getStatus() === \OCA\TalkSimplePoll\Model\Poll::STATUS_CLOSED) {
-			$output->writeln('There is currently no poll running');
+			$output->writeln('There is currently no poll running.');
 			return;
 		}
 
 		if ($input->getArgument('userId') === '') {
-			$output->writeln('Guests can\'t vote for now');
+			$output->writeln('Guests can\'t vote.');
 			return;
 		}
 
@@ -155,22 +165,25 @@ class Poll extends Base {
 	}
 
 	public function showPoll(OutputInterface $output, \OCA\TalkSimplePoll\Model\Poll $poll): void {
-		$output->writeln('Poll: ' . $poll->getQuestion() );
+		$output->write($poll->getQuestion());
 		$options = json_decode($poll->getOptions(), true);
 
 		$votes = $this->voteMapper->findByPoll($poll);
 		$totalVotes = count($votes);
 
-		$output->writeln($totalVotes . ' votes have been casted');
+		$output->writeln(' (' . $totalVotes . ' votes)');
 		$output->writeln('');
 
 		if ($poll->getStatus() === \OCA\TalkSimplePoll\Model\Poll::STATUS_OPEN) {
 			foreach ($options as $key => $option) {
 				$output->writeln('/vote ' . ($key+1) . ' - ' . $option);
 			}
+
+
+			$output->writeln('');
+			$output->writeln('/poll close - Close the voting and show results');
 			return;
 		}
-
 
 		$result = [];
 		foreach ($votes as $vote) {
@@ -178,12 +191,18 @@ class Poll extends Base {
 			$result[$vote->getOptionId()]++;
 		}
 
+		$winnerVotes = max($result);
+
 		foreach ($options as $key => $option) {
 			$votes = $result[$key] ?? 0;
 			$quota = $totalVotes === 0 ? 0 : ($votes / $totalVotes);
-			$chars = (int) ($quota * 50);
-			$output->writeln(($key+1) . '. ' . $option);
-			$output->writeln(str_repeat('█', $chars) . str_repeat('░', 50 - $chars) .  ' ' . round($quota * 100, 1) . '% (Votes: ' . ($result[$key] ?? 0) . ')');
+			$chars = (int) ($quota * 20);
+
+			$output->write(($key+1) . '. ' . $option . ': ' . $votes . ' votes,');
+			$output->write(' ' . round($quota * 100, 1) . '%');
+			$output->writeln((($votes === $winnerVotes)?' 🏆':''));
+			$output->write(str_repeat('█', $chars) );
+			$output->writeln(str_repeat('░', 20 - $chars));
 		}
 	}
 }
