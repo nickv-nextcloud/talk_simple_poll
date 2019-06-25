@@ -6,7 +6,7 @@
 	<summary><![CDATA[A simple chat based poll for Nextcloud Talk]]></summary>
 	<description><![CDATA[A simple chat based poll for Nextcloud Talk]]></description>
 
-	<version>0.1.0</version>
+	<version>0.2.0</version>
 	<licence>agpl</licence>
 
 	<author>Joas Schilling</author>
