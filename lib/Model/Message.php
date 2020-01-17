@@ -23,11 +23,10 @@ declare(strict_types=1);
 namespace OCA\Spreed\Model;
 
 
-use OCA\Spreed\Participant;
-use OCA\Spreed\Room;
+use OCA\Talk\Participant;
+use OCA\Talk\Room;
 use OCP\Comments\IComment;
 use OCP\IL10N;
-use OCP\IUser;
 
 class Message {
 
