@@ -88,6 +88,6 @@ Poll: Do you like polls?
 1. Install the app
 2. Setup the commands (you need to use your full path to occ, also don't use `sudo -u www-data` inside the command, because it is automatically run as www-data):
     ```
-    sudo -u www-data /var/www/nextcloud/occ talk:command:add poll Poll '/var/www/nextcloud/occ talk:poll {ROOM} {USER} "{ARGUMENTS_DOUBLEQUOTE_ESCAPED}"' 2 3
-    sudo -u www-data /var/www/nextcloud/occ talk:command:add vote Poll '/var/www/nextcloud/occ talk:poll:vote {ROOM} {USER} "{ARGUMENTS_DOUBLEQUOTE_ESCAPED}"' 2 3
+    sudo -u www-data /var/www/nextcloud/occ talk:command:add poll Poll '/var/www/nextcloud/occ talk:poll {ROOM} {USER} {ARGUMENTS}' 2 3
+    sudo -u www-data /var/www/nextcloud/occ talk:command:add vote Poll '/var/www/nextcloud/occ talk:poll:vote {ROOM} {USER} {ARGUMENTS}' 2 3
     ```
