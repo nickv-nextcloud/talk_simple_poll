@@ -6,7 +6,7 @@
 	<summary><![CDATA[A simple chat based poll for Nextcloud Talk]]></summary>
 	<description><![CDATA[A simple chat based poll for Nextcloud Talk]]></description>
 
-	<version>1.1.1</version>
+	<version>1.2.0</version>
 	<licence>agpl</licence>
 
 	<author>Joas Schilling</author>
@@ -25,7 +25,7 @@
 	<repository>https://github.com/nickv-nextcloud/talk_simple_poll.git</repository>
 
 	<dependencies>
-		<nextcloud min-version="18" max-version="19" />
+		<nextcloud min-version="18" max-version="20" />
 	</dependencies>
 
 	<commands>
