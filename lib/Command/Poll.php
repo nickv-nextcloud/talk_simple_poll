@@ -70,6 +70,11 @@ To close a running poll send a message with:
 		}
 
 		if (($payload === 'close' || $payload === 'end') && $poll instanceof \OCA\TalkSimplePoll\Model\Poll) {
+			if (!empty($poll->getUserId()) && $poll->getUserId() !== $input->getArgument('userId')) {
+				$output->writeln('The poll can only be closed by the author.');
+				return;
+			}
+
 			$poll->setStatus(\OCA\TalkSimplePoll\Model\Poll::STATUS_CLOSED);
 			$this->pollMapper->update($poll);
 
