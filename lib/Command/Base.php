@@ -41,6 +41,16 @@ class Base extends \OC\Core\Command\Base {
 		$this->voteMapper = $voteMapper;
 	}
 
+	public function showPollVotes(OutputInterface $output, \OCA\TalkSimplePoll\Model\Poll $poll): void {
+		$output->write($poll->getQuestion());
+		$options = json_decode($poll->getOptions(), true);
+
+		$votes = $this->voteMapper->findByPoll($poll);
+		$totalVotes = count($votes);
+
+		$output->writeln(' (' . $totalVotes . ' votes)');
+	}
+
 	public function showPoll(OutputInterface $output, \OCA\TalkSimplePoll\Model\Poll $poll): void {
 		$output->write($poll->getQuestion());
 		$options = json_decode($poll->getOptions(), true);

@@ -95,6 +95,6 @@ To vote for option 2, send a message with:
 			$this->voteMapper->insert($vote);
 		}
 
-		$this->showPoll($output, $poll);
+		$this->showPollVotes($output, $poll);
 	}
 }
