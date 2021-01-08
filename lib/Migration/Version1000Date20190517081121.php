@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace OCA\TalkSimplePoll\Migration;
 
 use Closure;
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use OCP\DB\ISchemaWrapper;
 use OCP\Migration\SimpleMigrationStep;
 use OCP\Migration\IOutput;
@@ -46,28 +46,28 @@ class Version1000Date20190517081121 extends SimpleMigrationStep {
 		if (!$schema->hasTable('tsp_polls')) {
 			$table = $schema->createTable('tsp_polls');
 
-			$table->addColumn('id', Type::INTEGER, [
+			$table->addColumn('id', Types::INTEGER, [
 				'autoincrement' => true,
 				'notnull' => true,
 				'length' => 20,
 			]);
-			$table->addColumn('question', Type::STRING, [
+			$table->addColumn('question', Types::STRING, [
 				'notnull' => true,
 				'length' => 255,
 			]);
-			$table->addColumn('options', Type::STRING, [
+			$table->addColumn('options', Types::STRING, [
 				'notnull' => true,
 				'length' => 1024,
 			]);
-			$table->addColumn('user_id', Type::STRING, [
+			$table->addColumn('user_id', Types::STRING, [
 				'notnull' => true,
 				'length' => 64,
 			]);
-			$table->addColumn('token', Type::STRING, [
+			$table->addColumn('token', Types::STRING, [
 				'notnull' => true,
 				'length' => 32,
 			]);
-			$table->addColumn('status', Type::INTEGER, [
+			$table->addColumn('status', Types::INTEGER, [
 				'notnull' => true,
 				'length' => 6,
 				'default' => 0,
@@ -79,20 +79,20 @@ class Version1000Date20190517081121 extends SimpleMigrationStep {
 		if (!$schema->hasTable('tsp_votes')) {
 			$table = $schema->createTable('tsp_votes');
 
-			$table->addColumn('id', Type::INTEGER, [
+			$table->addColumn('id', Types::INTEGER, [
 				'autoincrement' => true,
 				'notnull' => true,
 				'length' => 20,
 			]);
-			$table->addColumn('poll_id', Type::INTEGER, [
+			$table->addColumn('poll_id', Types::INTEGER, [
 				'notnull' => true,
 				'length' => 20,
 			]);
-			$table->addColumn('user_id', Type::STRING, [
+			$table->addColumn('user_id', Types::STRING, [
 				'notnull' => true,
 				'length' => 64,
 			]);
-			$table->addColumn('option_id', Type::INTEGER, [
+			$table->addColumn('option_id', Types::INTEGER, [
 				'notnull' => true,
 				'length' => 6,
 				'default' => 1,
