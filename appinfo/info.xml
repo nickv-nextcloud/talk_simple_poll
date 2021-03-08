@@ -25,7 +25,7 @@
 	<repository>https://github.com/nickv-nextcloud/talk_simple_poll.git</repository>
 
 	<dependencies>
-		<nextcloud min-version="18" max-version="21" />
+		<nextcloud min-version="20" max-version="21" />
 	</dependencies>
 
 	<commands>
