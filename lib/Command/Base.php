@@ -57,8 +57,6 @@ class Base extends \OC\Core\Command\Base {
 			}
 
 
-			$output->writeln('');
-			$output->writeln('/poll close - Close the voting and show results');
 			return;
 		}
 
