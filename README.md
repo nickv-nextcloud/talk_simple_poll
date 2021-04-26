@@ -90,8 +90,8 @@ Poll: Do you like polls?
   
     Normal installation:
     ```
-    sudo -u www-data /var/www/nextcloud/occ talk:command:add poll Poll '/var/www/nextcloud/occ talk:poll {ROOM} {USER} {ARGUMENTS}' 2 3
-    sudo -u www-data /var/www/nextcloud/occ talk:command:add vote Poll '/var/www/nextcloud/occ talk:poll:vote {ROOM} {USER} {ARGUMENTS}' 2 3
+    sudo -u www-data php /var/www/nextcloud/occ talk:command:add poll Poll 'php /var/www/nextcloud/occ talk:poll {ROOM} {USER} {ARGUMENTS}' 2 3
+    sudo -u www-data php /var/www/nextcloud/occ talk:command:add vote Poll 'php /var/www/nextcloud/occ talk:poll:vote {ROOM} {USER} {ARGUMENTS}' 2 3
     ```
     Linuxserver.io Docker (edit docker name if necessary):
     ```
