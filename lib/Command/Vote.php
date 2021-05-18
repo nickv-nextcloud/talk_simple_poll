@@ -52,7 +52,7 @@ To vote for option 2, send a message with:
 		;
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$payload = $input->getArgument('payload');
 
 		try {
@@ -63,24 +63,24 @@ To vote for option 2, send a message with:
 
 		if (!$poll instanceof \OCA\TalkSimplePoll\Model\Poll) {
 			$output->writeln('There is currently no poll running.');
-			return;
+			return 0;
 		}
 
 		if ($poll->getStatus() === \OCA\TalkSimplePoll\Model\Poll::STATUS_CLOSED) {
 			$output->writeln('There is currently no poll running.');
-			return;
+			return 0;
 		}
 
 		if ($input->getArgument('userId') === '') {
 			$output->writeln('Guests can\'t vote.');
-			return;
+			return 0;
 		}
 
 		$options = json_decode($poll->getOptions(), true);
 		$optionId = $payload - 1;
 		if ($optionId < 0 || $optionId >= count($options)) {
 			$output->writeln('Invalid option');
-			return;
+			return 0;
 		}
 
 		try {
@@ -96,5 +96,6 @@ To vote for option 2, send a message with:
 		}
 
 		$this->showPoll($output, $poll);
+		return 0;
 	}
 }
