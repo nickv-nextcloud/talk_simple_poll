@@ -60,7 +60,7 @@ To close a running poll send a message with:
 		;
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$payload = $input->getArgument('payload');
 
 		try {
@@ -74,12 +74,12 @@ To close a running poll send a message with:
 			$this->pollMapper->update($poll);
 
 			$this->showPoll($output, $poll);
-			return;
+			return 0;
 		}
 
 		if ($payload === 'show' && $poll instanceof \OCA\TalkSimplePoll\Model\Poll) {
 			$this->showPoll($output, $poll);
-			return;
+			return 0;
 		}
 
 		if (!$poll instanceof \OCA\TalkSimplePoll\Model\Poll || $poll->getStatus() === \OCA\TalkSimplePoll\Model\Poll::STATUS_CLOSED) {
@@ -89,12 +89,12 @@ To close a running poll send a message with:
 
 			if (strlen($payload) > (750 - ($numOptions * 50))) {
 				$output->writeln('The question and answer are too long.');
-				return;
+				return 0;
 			}
 
 			if (count($options) < 3) {
 				$output->writeln('You need to provide one question and at least two answers');
-				return;
+				return 0;
 			}
 
 			$question = array_shift($options);
@@ -106,11 +106,12 @@ To close a running poll send a message with:
 			$this->pollMapper->insert($poll);
 
 			$this->showPoll($output, $poll);
-			return;
+			return 0;
 		}
 
 		$output->writeln('A poll is already running.');
 		$output->writeln('');
 		$this->showPoll($output, $poll);
+		return 0;
 	}
 }
